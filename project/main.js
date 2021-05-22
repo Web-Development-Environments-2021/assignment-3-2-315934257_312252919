@@ -11,6 +11,7 @@ const session = require("client-sessions");
 var logger = require("morgan");
 var cors = require("cors");
 
+
 var app = express();
 app.use(logger("dev")); //logger
 app.use(express.json()); // parse application/json
@@ -51,6 +52,7 @@ const auth = require("./routes/auth");
 const users = require("./routes/users");
 const league = require("./routes/league");
 const teams = require("./routes/teams");
+const games = require("./routes/games");
 
 //#endregion
 
@@ -78,6 +80,7 @@ app.get("/alive", (req, res) => res.send("I'm alive"));
 app.use("/users", users);
 app.use("/league", league);
 app.use("/teams", teams);
+app.use("/games", games);
 app.use(auth);
 
 app.use(function (err, req, res, next) {
