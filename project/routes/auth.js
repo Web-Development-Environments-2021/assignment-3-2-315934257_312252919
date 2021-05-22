@@ -44,7 +44,7 @@ router.post("/Login", async (req, res, next) => {
     console.log(user);
 
     // check that username exists & the password is correct
-    if (!user || !bcrypt.compareSync(req.body.password, user.password)) {
+    if (!user || !bcrypt.compareSync(req.body.password, user.pswd)) {
       throw { status: 401, message: "Username or Password incorrect" };
     }
 
