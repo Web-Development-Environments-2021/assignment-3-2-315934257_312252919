@@ -197,7 +197,7 @@ router.get("/teamFullDetails/:teamId", async (req, res, next) => {
 });
 
 
-router.get("/search/:team_name", async (req, res, next) => {
+router.get("/search/:teamName", async (req, res, next) => {
   try {
     const team_responses = await team_utils.getTeamByName(
       req.params.team_name
