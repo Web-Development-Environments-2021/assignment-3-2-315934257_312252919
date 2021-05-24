@@ -1,5 +1,5 @@
--- Create a new table called 'Users' in schema 'dbo'
--- Drop the table if it already exists
+-- -- Create a new table called 'Users' in schema 'dbo'
+-- -- Drop the table if it already exists
 IF OBJECT_ID('dbo.Users', 'U') IS NOT NULL
 DROP TABLE dbo.Users
 GO
@@ -19,8 +19,8 @@ CREATE TABLE dbo.Users
 );
 GO
 
-Create a new table called 'Referees' in schema 'dbo'
-Drop the table if it already exists
+-- Create a new table called 'Referees' in schema 'dbo'
+-- Drop the table if it already exists
 IF OBJECT_ID('dbo.Referees', 'U') IS NOT NULL
 DROP TABLE dbo.Referees
 GO
@@ -34,8 +34,8 @@ CREATE TABLE dbo.Referees
 );
 GO
 
--- Create a new table called 'Games' in schema 'dbo'
--- Drop the table if it already exists
+-- -- -- Create a new table called 'Games' in schema 'dbo'
+-- -- -- Drop the table if it already exists
 IF OBJECT_ID('dbo.Games', 'U') IS NOT NULL
 DROP TABLE dbo.Games
 GO
@@ -50,5 +50,34 @@ CREATE TABLE dbo.Games
     field INT,
     score INT,
     referee_id INT FOREIGN KEY REFERENCES Referees(referee_id)
+);
+GO
+
+
+-- Create a new table called 'AssociationRepresentative' in schema 'dbo'
+-- Drop the table if it already exists
+IF OBJECT_ID('dbo.AssociationRepresentative', 'U') IS NOT NULL
+DROP TABLE dbo.AssociationRepresentative
+GO
+-- Create the table in the specified schema
+CREATE TABLE dbo.AssociationRepresentative
+(
+    AssociationRepresentativeId INT NOT NULL IDENTITY(1,1) PRIMARY KEY, -- primary key column
+    userId INT FOREIGN KEY REFERENCES Users(user_id),
+);
+GO
+
+
+-- Create a new table called 'Admins' in schema 'dbo'
+-- Drop the table if it already exists
+IF OBJECT_ID('dbo.Admins', 'U') IS NOT NULL
+DROP TABLE dbo.Admins
+GO
+-- Create the table in the specified schema
+CREATE TABLE dbo.Admins
+(
+    adminId INT NOT NULL IDENTITY(1,1) PRIMARY KEY, -- primary key column
+    userId INT FOREIGN KEY REFERENCES Users(user_id),
+    -- specify more columns here
 );
 GO
