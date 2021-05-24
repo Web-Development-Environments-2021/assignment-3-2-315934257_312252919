@@ -194,10 +194,6 @@ router.get("/teamFullDetails/:teamId", async (req, res, next) => {
        WHERE home_team='${req.params.teamId}' 
        OR away_team='${req.params.teamId}'`
        );
-    // past_games = [];
-    // future_games = [];
-    // team_games.map((game) => {game.game_date_time < Date.now() ?
-    //    past_games.push(game) : future_games.push(game)})
     game_partition = find_past_future_games(team_games);
     res.send({team_info : team_details, past_games: game_partition.past, future_games: game_partition.future});
   } catch (error) {
@@ -217,7 +213,7 @@ find_past_future_games = (team_games) => {
 router.get("/search/:teamName", async (req, res, next) => {
   try {
     const team_responses = await team_utils.getTeamByName(
-      req.params.team_name
+      req.params.teamName
     );
     res.send(team_responses);
   } catch (error) {

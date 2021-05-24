@@ -1,11 +1,13 @@
 const axios = require("axios");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
+const leauge_utils = require("./league_utils");
 
 async function getTeamByName(team_name){
     let league_teams_list = []
     const teams_list = await axios.get(`${api_domain}/teams/search/${team_name}`, {
         params: {
           api_token: process.env.api_token,
+          include: "league"
         },
       });
 
@@ -33,8 +35,9 @@ async function getTeamByName(team_name){
     //#endregion
 
     teams_list.data.data.map((team) => {
-        if(team.country_id === 320){
-            league_teams_list.push(team);
+        if(team.league.data.id === leauge_utils.getLeagueID()){
+          team_relevant_info = {name: team.name, logo: team.logo_path}
+            league_teams_list.push(team_relevant_info);
         }
     });
     console.log(league_teams_list)
