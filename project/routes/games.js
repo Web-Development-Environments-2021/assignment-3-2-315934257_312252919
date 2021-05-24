@@ -11,6 +11,15 @@ router.post("/addGame", async (req, res, next) => {
     //   )[0];
     //   // user = user[0];
     //   console.log(user);
+
+    const representative =  (
+      await DButils.execQuery(
+      `SELECT * FROM dbo.AssociationRepresentative WHERE userId = '${req.session.user_id}'`
+      )
+    )[0];
+    if(!representative){
+      throw { status: 401, message: "You don't have the permissions."};
+    }
   
     await DButils.execQuery(
         `INSERT INTO dbo.Games (home_team, away_team, game_date_time) VALUES
