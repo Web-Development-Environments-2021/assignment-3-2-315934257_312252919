@@ -1,4 +1,5 @@
 const axios = require("axios");
+const league_utils = require("./league_utils")
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 // const TEAM_ID = "85";
 
@@ -23,7 +24,7 @@ async function getPlayersInfo(players_ids_list, full_details) {
       axios.get(`${api_domain}/players/${id}`, {
         params: {
           api_token: process.env.api_token,
-          include: "team",
+          include: "team.league",
         },
       })
     )
@@ -36,48 +37,93 @@ async function getPlayersInfo(players_ids_list, full_details) {
 }
 
 function extractAllData(players_info){
-  return players_info.map((player_info) => {
-    const { fullname, image_path, position_id,
-            common_name, nationality, birthdate,
-            birthcountry, height, weight } = player_info.data.data;
-    const { name } = player_info.data.data.team.data;
-    return {
-      name: fullname,
-      image: image_path,
-      position: position_id,
-      team_name: name,
-      common_name: common_name,
-      nationality: nationality,
-      birthdate: birthdate,
-      birthcountry: birthcountry,
-      height: height,
-      weight: weight
-    };
+  let ret = [];
+  players_info.map((player_info) => {
+    if(player_info.data.data.team.data.league.data.id == league_utils.getLeagueID()){ //check if league id equals to 271
+      const { fullname, image_path, position_id,
+        common_name, nationality, birthdate,
+        birthcountry, height, weight } = player_info.data.data;
+      const { name } = player_info.data.data.team.data;
+
+      let x = {
+        name: fullname,
+        image: image_path,
+        position: position_id,
+        team_name: name,
+        common_name: common_name,
+        nationality: nationality,
+        birthdate: birthdate,
+        birthcountry: birthcountry,
+        height: height,
+        weight: weight
+      };
+
+      ret.push(x);
+    }
   });
+
+  return ret;
+
+  //#region 
+  // return players_info.map((player_info) => {
+  //   const { fullname, image_path, position_id,
+  //           common_name, nationality, birthdate,
+  //           birthcountry, height, weight } = player_info.data.data;
+  //   const { name } = player_info.data.data.team.data;
+  //   return {
+  //     name: fullname,
+  //     image: image_path,
+  //     position: position_id,
+  //     team_name: name,
+  //     common_name: common_name,
+  //     nationality: nationality,
+  //     birthdate: birthdate,
+  //     birthcountry: birthcountry,
+  //     height: height,
+  //     weight: weight
+  //   };
+  // });
+  //#endregion
 }
 
 function extractRelevantPlayerData(players_info) {
-  return players_info.map((player_info) => {
-    const { fullname, image_path, position_id } = player_info.data.data;
-    const { name } = player_info.data.data.team.data;
-    return {
-      name: fullname,
-      image: image_path,
-      position: position_id,
-      team_name: name,
-    };
+  let ret = [];
+  players_info.map((player_info) => {
+        if(player_info.data.data.team.data.league.data.id == league_utils.getLeagueID()){ //check if league id equals to 271
+        const { fullname, image_path, position_id } = player_info.data.data;
+        const { name } = player_info.data.data.team.data;
+
+        let x = {
+              name: fullname,
+              image: image_path,
+              position: position_id,
+              team_name: name,
+            };
+      ret.push(x);
+    }
   });
+  return ret;
+  
+  //#region 
+  // return players_info.map((player_info) => {
+  //   const { fullname, image_path, position_id } = player_info.data.data;
+  //   const { name } = player_info.data.data.team.data;
+  //   return {
+  //     name: fullname,
+  //     image: image_path,
+  //     position: position_id,
+  //     team_name: name,
+  //   };
+  // });
+  //#endregion
 }
 
 function extractRelevantPlayerDataByName(players_info) {
   let ret = []
   players_info.map((player_info) => {
-    if(player_info.country_id === 320){
+    if(player_info.team && player_info.team.data.league && player_info.team.data.league.data.id == league_utils.getLeagueID()){
       const { fullname, image_path, position_id } = player_info;
-      let name = null;
-      if(player_info.team){
-        name = player_info.team.data.name;
-      }
+      let name = player_info.team.data.name;
 
       ret.push({
         name: fullname,
@@ -100,7 +146,7 @@ async function getPlayerDetailsByName(player_name){
   const players = await axios.get(`${api_domain}/players/search/${player_name}`, {
     params: {
       api_token: process.env.api_token,
-      include: "team",
+      include: "team.league",
     },
   });
   return extractRelevantPlayerDataByName(players.data.data);

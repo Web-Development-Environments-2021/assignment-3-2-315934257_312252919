@@ -26,4 +26,10 @@ async function getLeagueDetails() {
     // next game details should come from DB
   };
 }
+
+function getLeagueID(){
+  return LEAGUE_ID;
+}
+
+exports.getLeagueID = getLeagueID;
 exports.getLeagueDetails = getLeagueDetails;

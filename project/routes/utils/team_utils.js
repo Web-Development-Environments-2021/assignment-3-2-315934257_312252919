@@ -8,6 +8,8 @@ async function getTeamByName(team_name){
           api_token: process.env.api_token,
         },
       });
+
+    //#region 
     // const teams_list_data = {
     //     data: [
     //       {
@@ -28,6 +30,8 @@ async function getTeamByName(team_name){
     //     meta: { plans: [ [Object] ], sports: [ [Object], [Object] ] }
     //   }
     //   console.log(teams_list.data);
+    //#endregion
+
     teams_list.data.data.map((team) => {
         if(team.country_id === 320){
             league_teams_list.push(team);
@@ -37,5 +41,16 @@ async function getTeamByName(team_name){
     return league_teams_list;
 }
 
+async function getTeamById(team_id){
+  const team_data = await axios.get(`${api_domain}/teams/${team_id}`, {
+    params: {
+      api_token: process.env.api_token,
+      include: "league"
+    },
+  });
+  return team_data;
+}
+
 
 exports.getTeamByName = getTeamByName;
+exports.getTeamById = getTeamById;
