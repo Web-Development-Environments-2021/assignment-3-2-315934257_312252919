@@ -3,10 +3,18 @@ var router = express.Router();
 const DButils = require("./utils/DButils");
 const players_utils = require("./utils/players_utils");
 const team_utils = require("./utils/team_utils");
+const league_utils = require("./utils/league_utils");
 
 router.get("/teamFullDetails/:teamId", async (req, res, next) => {
   // let team_details = [];
   try {
+    const league_check = await team_utils.getTeamById(req.params.teamId);
+    console.log(league_check.data.data);
+    if(league_check.data.data.league && league_check.data.data.league.data.id != league_utils.getLeagueID()){
+      res.send({});
+      return;
+    }
+
     const team_details = await players_utils.getPlayersByTeam(
       req.params.teamId
     );
