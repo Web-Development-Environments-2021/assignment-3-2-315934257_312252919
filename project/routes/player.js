@@ -19,7 +19,7 @@ router.get("/getPreviewDetails/:playerId", async (req, res, next) => {
 
 router.get("/search/:playerName", async (req, res, next) => {
     try{
-        const players_details = await players_utils.getPlayerDetailsByName(req.params.playerName);
+        const players_details = await players_utils.getPlayerDetailsByName(req.params.playerName, req.query);
         res.send(players_details);
     } catch(error){
         next(error);

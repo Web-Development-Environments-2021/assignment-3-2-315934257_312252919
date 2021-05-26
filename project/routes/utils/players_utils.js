@@ -118,10 +118,39 @@ function extractRelevantPlayerData(players_info) {
   //#endregion
 }
 
-function extractRelevantPlayerDataByName(players_info) {
+function playerInLeagueCheck(player_info){
+  return (player_info.team) && (player_info.team.data.league) && (player_info.team.data.league.data.id == league_utils.getLeagueID())
+}
+
+function filterByQuery(player_info, req_query){
+  let team_name = req_query.team
+  let position = req_query.position
+  if(!team_name && !position){ //if both undefined, don't filter
+    return true;
+  }
+  else if(!team_name && position){ //if team_name is undefined, filter by position only
+    if(player_info.position_id == position){
+      return true
+    }
+  }
+  else if(team_name && !position){ //if position is undefined, filter by team_name only
+    if(player_info.team && player_info.team.data.name == team_name){
+      return true
+    }
+  }
+  else{ // if both are defined, filter by both
+    if(player_info.team && player_info.team.data.name == team_name && player_info.position_id == position){
+      return true
+    }
+  }
+
+  return false
+}
+
+function extractRelevantPlayerDataByName(players_info, req_query) {
   let ret = []
   players_info.map((player_info) => {
-    if(player_info.team && player_info.team.data.league && player_info.team.data.league.data.id == league_utils.getLeagueID()){
+    if(playerInLeagueCheck(player_info) && filterByQuery(player_info, req_query)){
       const { fullname, image_path, position_id } = player_info;
       let name = player_info.team.data.name;
 
@@ -142,14 +171,14 @@ async function getPlayersByTeam(team_id) {
   return players_info;
 }
 
-async function getPlayerDetailsByName(player_name){
+async function getPlayerDetailsByName(player_name, req_query){
   const players = await axios.get(`${api_domain}/players/search/${player_name}`, {
     params: {
       api_token: process.env.api_token,
       include: "team.league",
     },
   });
-  return extractRelevantPlayerDataByName(players.data.data);
+  return extractRelevantPlayerDataByName(players.data.data, req_query);
 }
 
 exports.getPlayersByTeam = getPlayersByTeam;
