@@ -48,7 +48,8 @@ CREATE TABLE dbo.Games
     away_team INT NOT NULL,
     game_date_time DATETIME NOT NULL,
     field INT,
-    score INT,
+    home_team_score INT,
+    away_team_score INT,
     referee_id INT FOREIGN KEY REFERENCES Referees(referee_id)
 );
 GO
@@ -62,7 +63,8 @@ GO
 -- Create the table in the specified schema
 CREATE TABLE dbo.AssociationRepresentative
 (
-    AssociationRepresentativeId INT NOT NULL IDENTITY(1,1) PRIMARY KEY, -- primary key column
+    AssociationRepresentativeId INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    -- primary key column
     userId INT FOREIGN KEY REFERENCES Users(user_id),
 );
 GO
@@ -76,7 +78,8 @@ GO
 -- Create the table in the specified schema
 CREATE TABLE dbo.Admins
 (
-    adminId INT NOT NULL IDENTITY(1,1) PRIMARY KEY, -- primary key column
+    adminId INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    -- primary key column
     userId INT FOREIGN KEY REFERENCES Users(user_id),
     -- specify more columns here
 );
