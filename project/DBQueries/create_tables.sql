@@ -81,3 +81,19 @@ CREATE TABLE dbo.Admins
     -- specify more columns here
 );
 GO
+
+
+-- Create a new table called 'UsersFavoriteGames' in schema 'dbo'
+-- Drop the table if it already exists
+IF OBJECT_ID('dbo.UsersFavoriteGames', 'U') IS NOT NULL
+DROP TABLE dbo.UsersFavoriteGames
+GO
+-- Create the table in the specified schema
+CREATE TABLE dbo.UsersFavoriteGames
+(
+    user_id INT NOT NULL ,
+    game_id INT NOT NULL,
+    PRIMARY KEY(user_id, game_id)
+    -- specify more columns here
+);
+GO
