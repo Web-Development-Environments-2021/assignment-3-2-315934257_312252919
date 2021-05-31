@@ -70,19 +70,14 @@ router.post("/favoriteGames", async (req, res, next) => {
 router.get("/favoriteGames", async (req, res, next) => {
   try{
     const user_id = req.session.user_id;
-    const game_ids = await users_utils.getFavoriteGames(user_id);
-    let game_info = []
-    for (const game of game_ids){
-      const info = await game_utils.getGameInfo(user_id, game.game_id);
-      if (info)
-        game_info.push(info);
-    }
-    // const results = await game_utils.getGameInfo(game_ids_array[1]);
+    const game_info = game_utils.gamesInfo(user_id);
     res.status(200).send(game_info);
   }
   catch (error) {
     next(error);
   }
 });
+
+
 
 module.exports = router;

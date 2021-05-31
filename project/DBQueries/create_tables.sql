@@ -1,5 +1,5 @@
 -- -- Create a new table called 'Users' in schema 'dbo'
--- -- Drop the table if it already exists
+-- Drop the table if it already exists
 IF OBJECT_ID('dbo.Users', 'U') IS NOT NULL
 DROP TABLE dbo.Users
 GO
@@ -47,10 +47,10 @@ CREATE TABLE dbo.Games
     home_team INT NOT NULL,
     away_team INT NOT NULL,
     game_date_time DATETIME NOT NULL,
-    field INT,
+    field [NVARCHAR](50) NOT NULL,
     home_team_score INT,
     away_team_score INT,
-    referee_id INT FOREIGN KEY REFERENCES Referees(referee_id)
+    referee_name [NVARCHAR](50) NOT NULL 
 );
 GO
 
