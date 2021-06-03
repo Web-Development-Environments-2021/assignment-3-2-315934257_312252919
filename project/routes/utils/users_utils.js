@@ -13,7 +13,9 @@ async function getFavoritePlayers(user_id) {
   return player_ids;
 }
 
-
+/*
+inserts a game to user's favorite games.
+*/
 async function markGameAsFavorite(user_id, game_id){
   const user_games = await DButils.execQuery(
     `SELECT game_id FROM dbo.UsersFavoriteGames where user_id='${user_id}'`
@@ -34,6 +36,9 @@ async function markGameAsFavorite(user_id, game_id){
   );
 }
 
+/*
+returns user's favorite games.
+*/
 async function getFavoriteGames(user_id) {
   const game_ids = await DButils.execQuery(
     `select game_id from UsersFavoriteGames where user_id='${user_id}'`

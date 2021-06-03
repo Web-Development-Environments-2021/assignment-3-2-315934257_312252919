@@ -3,6 +3,10 @@ const league_utils = require("./league_utils")
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 // const TEAM_ID = "85";
 
+
+/*
+returns a list containing the id's of the players of the team.
+*/
 async function getPlayerIdsByTeam(team_id) {
   let player_ids_list = [];
   const team = await axios.get(`${api_domain}/teams/${team_id}`, {
@@ -17,6 +21,11 @@ async function getPlayerIdsByTeam(team_id) {
   return player_ids_list;
 }
 
+
+/*
+receives a list of players and returns their information, whether it full details or not
+specified by the boolean variable full_details.
+*/
 async function getPlayersInfo(players_ids_list, full_details) {
   let promises = [];
   players_ids_list.map((id) =>
@@ -36,6 +45,10 @@ async function getPlayersInfo(players_ids_list, full_details) {
   return extractRelevantPlayerData(players_info);
 }
 
+
+/*
+returns full data of given players.
+*/
 function extractAllData(players_info){
   let ret = [];
   players_info.map((player_info) => {
@@ -86,6 +99,9 @@ function extractAllData(players_info){
   //#endregion
 }
 
+/*
+returns specific data(preview) of players.
+*/
 function extractRelevantPlayerData(players_info) {
   let ret = [];
   players_info.map((player_info) => {
@@ -118,10 +134,16 @@ function extractRelevantPlayerData(players_info) {
   //#endregion
 }
 
+/*
+checks whether a plyer is part of the Belgium league.
+*/
 function playerInLeagueCheck(player_info){
   return (player_info.team) && (player_info.team.data.league) && (player_info.team.data.league.data.id == league_utils.getLeagueID())
 }
 
+/*
+checks the filter params.
+*/
 function filterByQuery(player_info, req_query){
   let team_name = req_query.team
   let position = req_query.position
@@ -147,6 +169,10 @@ function filterByQuery(player_info, req_query){
   return false
 }
 
+
+/*
+returns relevant players after filtering(if needed)
+*/
 function extractRelevantPlayerDataByName(players_info, req_query) {
   let ret = []
   players_info.map((player_info) => {
@@ -165,12 +191,19 @@ function extractRelevantPlayerDataByName(players_info, req_query) {
   return ret;
 }
 
+/*
+returns players and their info - all player from a team with team_id
+*/
 async function getPlayersByTeam(team_id) {
   let player_ids_list = await getPlayerIdsByTeam(team_id);
   let players_info = await getPlayersInfo(player_ids_list, false);
   return players_info;
 }
 
+
+/*
+searches for players with given name and returns their information.
+*/
 async function getPlayerDetailsByName(player_name, req_query){
   const players = await axios.get(`${api_domain}/players/search/${player_name}`, {
     params: {

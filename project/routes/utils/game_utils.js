@@ -2,13 +2,20 @@ const DButils = require("./DButils");
 const users_utils = require("./users_utils");
 const game_utils = require("./game_utils");
 
+
+/*
+returns game's information from DB.
+*/
 async function getGameInfo(game_id){
     let game_info = await DButils.execQuery(
         `select home_team, away_team, game_date_time, field from Games where game_id='${game_id}'`
       );
     return game_info[0];
 }
-
+/*
+checks whether a game has already passed and deletes it from DB
+the check is made by game's date and Date.now()
+*/
 async function deletePastGame(game_info, user_id, game_id){
     if (game_info.length == 0 || game_info.game_date_time < Date.now()){
         await DButils.execQuery(
@@ -19,7 +26,9 @@ async function deletePastGame(game_info, user_id, game_id){
     return true;
 }
 
-
+/*
+returns the closest future game by it's date
+*/
 async function getClosestGame(){
     let games = await DButils.execQuery(
         `SELECT home_team, away_team, game_date_time, field from Games
@@ -31,7 +40,9 @@ async function getClosestGame(){
     return games[0];
 }
 
-
+/*
+returns user favorite games' info.
+*/
 async function gamesInfo(user_id){
     if(!user_id)
         return null;

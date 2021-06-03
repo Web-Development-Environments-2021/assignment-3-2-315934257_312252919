@@ -2,6 +2,15 @@ const axios = require("axios");
 const LEAGUE_ID = 271;
 const game_utils = require("./game_utils");
 
+
+/*
+returns league details as specified:
+* the name of the league
+* the name of the season
+* the name of the stage(if present)
+* information about the next game
+* user's favorite games.
+*/
 async function getLeagueDetails(user_id) {
   const league = await axios.get(
     `https://soccer.sportmonks.com/api/v2.0/leagues/${LEAGUE_ID}`,
@@ -34,6 +43,9 @@ async function getLeagueDetails(user_id) {
 
 }
 
+/*
+returns the league id.
+*/
 function getLeagueID(){
   return LEAGUE_ID;
 }

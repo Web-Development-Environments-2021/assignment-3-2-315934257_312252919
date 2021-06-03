@@ -2,6 +2,10 @@ const axios = require("axios");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 const leauge_utils = require("./league_utils");
 
+
+/*
+searches for teams with given name and returns them - team name and team logo
+*/
 async function getTeamByName(team_name){
     let league_teams_list = []
     const teams_list = await axios.get(`${api_domain}/teams/search/${team_name}`, {
@@ -44,6 +48,10 @@ async function getTeamByName(team_name){
     return league_teams_list;
 }
 
+
+/*
+returns team data by given team_id.
+*/
 async function getTeamById(team_id){
   const team_data = await axios.get(`${api_domain}/teams/${team_id}`, {
     params: {
@@ -54,6 +62,9 @@ async function getTeamById(team_id){
   return team_data;
 }
 
+/*
+sets apart past and future games.
+*/
 function find_past_future_games(team_games){
   past_games = [];
   future_games = [];
