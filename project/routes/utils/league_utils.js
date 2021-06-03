@@ -12,18 +12,21 @@ async function getLeagueDetails(user_id) {
       },
     }
   );
-  const stage = await axios.get(
-    `https://soccer.sportmonks.com/api/v2.0/stages/${league.data.data.current_stage_id}`,
-    {
-      params: {
-        api_token: process.env.api_token,
-      },
-    }
-  );
+  let stage = null;
+  if(league.data.data.current_stage_id){
+    stage = await axios.get(
+      `https://soccer.sportmonks.com/api/v2.0/stages/${league.data.data.current_stage_id}`,
+      {
+        params: {
+          api_token: process.env.api_token,
+        },
+      }
+    );
+  }
   return {
     league_name: league.data.data.name,
     current_season_name: league.data.data.season.data.name,
-    current_stage_name: stage.data.data.name,
+    current_stage_name: stage ? stage.data.data.name : null,
     // next game details should come from DB
     next_game: await game_utils.getClosestGame(),
     user_favorite_games: await game_utils.gamesInfo(user_id) 
