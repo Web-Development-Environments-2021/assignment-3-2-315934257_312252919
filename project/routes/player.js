@@ -14,6 +14,10 @@ router.get("/getPreviewDetails/:playerId", async (req, res, next) => {
     //         "position": 3,
     //         "team_name": "Celtic"
     //     };
+        if(player_details.length == 0){
+            res.status(404).send("No player with given id was found");
+            return;
+        }
         res.send(player_details[0]);
       } catch (error) {
         next(error);
@@ -52,6 +56,11 @@ router.get("/getFullDetails/:playerId", async (req, res, next) => {
         //     "height": "175 cm",
         //     "weight": null
         // }
+
+        if(player_details.length == 0){
+            res.status(404).send("No player with given id was found");
+            return;
+        }
 
         res.send(player_details[0]);
         } catch (error) {
