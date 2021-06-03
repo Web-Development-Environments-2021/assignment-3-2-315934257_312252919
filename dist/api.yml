@@ -225,18 +225,10 @@ paths:
       responses:
         "200":
           description: the operation successful - an array relevant players JSON object is fetched
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Player'
-        "400":
-          description: Invalid player supplied
-        "404":
-          description: Player not found
   /games/addGame:
     post:
       tags:
-      - Game
+      - Games
       summary: Inserts new game into the Database
       description: Checks whether the inserting user has the right permissions and inserts the game with its information to the database.
       requestBody:
@@ -250,6 +242,23 @@ paths:
           description: A game has been added.
         "400":
           description: Wrong input parameters or missing arguments.
+  /games/stageGames:
+    get:
+      tags:
+      - Games
+      summary: Shows all games of the stage
+      description: shows all games seperated to past and future games. past games will have additional information.
+      responses:
+        "200":
+          description: the operation successful - two arrays of game objest are fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Player'
+        "400":
+          description: Invalid player supplied
+        "404":
+          description: Player not found
   /admins/addAdmin:
     post:
       tags:
