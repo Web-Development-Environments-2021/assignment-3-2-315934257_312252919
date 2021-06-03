@@ -1,6 +1,8 @@
 var express = require("express");
 var router = express.Router();
 const DButils = require("../routes/utils/DButils");
+const gameUtils = require("../routes/utils/game_utils");
+const team_utils = require("../routes/utils/team_utils");
 
 router.post("/addGame", async (req, res, next) => {
     try {
@@ -12,6 +14,10 @@ router.post("/addGame", async (req, res, next) => {
         )[0];
         if(!representative){
           throw { status: 401, message: "You don't have the permissions."};
+        }
+
+        if(!(await team_utils.checkTeamInLeague(req.body.home_team)) || !(await team_utils.checkTeamInLeague(req.body.away_team))){
+          throw {status: 406 , message: "You can't add teams that are not part of the league."}
         }
       
         await DButils.execQuery(
@@ -29,4 +35,42 @@ router.post("/addGame", async (req, res, next) => {
     }
   });
 
-  module.exports = router;
+
+router.get("/stageGames", async (req, res, next) => {
+  try{
+    let games = await gameUtils.getGames();
+    let {past, future} = gameUtils.sepPastFutureGames(games);
+    let future_relevant_info = []
+    future.map((game) => {
+      future_relevant_info.push(
+        {
+          home_team : game.home_team,
+          away_team : game.away_team,
+          game_date_time : game.game_date_time,
+          field : game.field
+        }
+      )
+    });
+    let past_relevant_info = []
+    for(const game of past) {
+      const events = await gameUtils.getGameEvents(game.game_id);
+      past_relevant_info.push(
+        {
+          home_team : game.home_team,
+          away_team : game.away_team,
+          game_date_time : game.game_date_time,
+          field : game.field,
+          home_team_score : game.home_team_score,
+          away_team_score : game.away_team_score,
+          events : events
+        }
+      )
+    }
+    res.status(200).send({past: past_relevant_info, future: future_relevant_info});
+  }
+  catch (error){
+    next(error);
+  }
+});
+
+module.exports = router;

@@ -10,9 +10,8 @@ router.get("/teamFullDetails/:teamId", async (req, res, next) => {
     if(!req.params.teamId){
       throw {status: 400, message: "Missing parameters"};
     }
-    const league_check = await team_utils.getTeamById(req.params.teamId);
-    console.log(league_check.data.data);
-    if(league_check.data.data.league && league_check.data.data.league.data.id != league_utils.getLeagueID()){
+    const league_check = team_utils.checkTeamInLeague(req.params.teamId);
+    if(!league_check){
       res.send({});
       return;
     }

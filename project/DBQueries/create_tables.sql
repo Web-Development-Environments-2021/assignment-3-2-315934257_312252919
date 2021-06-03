@@ -94,8 +94,8 @@ GO
 -- Create the table in the specified schema
 CREATE TABLE dbo.UsersFavoriteGames
 (
-    user_id INT NOT NULL ,
-    game_id INT NOT NULL,
+    user_id INT NOT NULL FOREIGN KEY REFERENCES Users(user_id),
+    game_id INT NOT NULL FOREIGN KEY REFERENCES Games(game_id),
     PRIMARY KEY(user_id, game_id)
     -- specify more columns here
 );

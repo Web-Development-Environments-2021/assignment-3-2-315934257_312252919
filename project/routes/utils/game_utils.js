@@ -12,6 +12,15 @@ async function getGameInfo(game_id){
       );
     return game_info[0];
 }
+
+/*
+get all games from the db.
+*/
+async function getGames(){
+    return await DButils.execQuery(
+        `select * FROM Games`
+    );
+}
 /*
 checks whether a game has already passed and deletes it from DB
 the check is made by game's date and Date.now()
@@ -55,9 +64,34 @@ async function gamesInfo(user_id){
         game_info.push(info);
     }
     return game_info
-  }
+}
+
+/*
+separates past and future games.
+*/
+function sepPastFutureGames(games){
+    let past_games = [];
+    let future_games = [];
+    games.map((game) => {game.game_date_time < Date.now() ?
+        past_games.push(game) : future_games.push(game)})
+    return {past: past_games, future: future_games};
+}
+
+/*
+retrieves all events of a game.
+*/
+async function getGameEvents(game_id){
+    const gameEvents = await DButils.execQuery(
+        `SELECT * FROM Events where game_id='${game_id}'`
+    )
+    return gameEvents;
+}
+
 
 exports.getGameInfo = getGameInfo;
 exports.deletePastGame = deletePastGame;
 exports.getClosestGame = getClosestGame;
 exports.gamesInfo = gamesInfo;
+exports.getGames = getGames;
+exports.sepPastFutureGames = sepPastFutureGames;
+exports.getGameEvents = getGameEvents;

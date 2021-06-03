@@ -1,6 +1,7 @@
 const axios = require("axios");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
-const leauge_utils = require("./league_utils");
+const league_utils = require("./league_utils");
+const game_utils = require("./game_utils");
 
 
 /*
@@ -63,16 +64,26 @@ async function getTeamById(team_id){
 }
 
 /*
+checks whether a team with team_id is part of the league.
+*/
+async function checkTeamInLeague(team_id){
+  const league_check = await getTeamById(team_id);
+  if(league_check.data.data.league && league_check.data.data.league.data.id != league_utils.getLeagueID()){
+    return false;
+  }
+  return true;
+}
+
+/*
 sets apart past and future games.
 */
 function find_past_future_games(team_games){
-  past_games = [];
-  future_games = [];
-  team_games.map((game) => {game.game_date_time < Date.now() ?
-      past_games.push(game) : future_games.push(game)})
-  return {past: past_games, future: future_games};
+  return game_utils.sepPastFutureGames(team_games);
 }
+
+
 
 exports.getTeamByName = getTeamByName;
 exports.getTeamById = getTeamById;
 exports.find_past_future_games = find_past_future_games;
+exports.checkTeamInLeague = checkTeamInLeague;
