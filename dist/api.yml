@@ -1,143 +1,327 @@
 openapi: 3.0.0
 info:
-  title: api
-  description: API for  project
+  title: League Management API
+  description: An API that allows users to obtain existing information of teams and players or post info of games/teams etc
   version: 1.0.0
-tags:
-  - name: Users
-  - name: Auth
-  - name: League
-  - name: Players
-  - name: Teams
-  - name: Games
+servers:
+- url: https://virtserver.swaggerhub.com/JonatanMilver/LeagueManagementAPI/1.0.0
+  description: SwaggerHub API Auto Mocking
 paths:
   /Register:
     post:
       tags:
-        - Auth
-      summary: Add new user
-      description: A new user from the client is added to the server
+      - Users
+      - Auth
+      summary: A new user from the client is added to the server.
+      description: A JSON objects contains all the details about the new user.
       requestBody:
-        required: true
+        description: User object to add
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/User"
+              $ref: '#/components/schemas/User'
+        required: true
       responses:
         "201":
           description: A new user has been added
         "400":
-          description: wrong input parameters
+          description: Wrong input parameters
   /Login:
     post:
       tags:
-        - Auth
-      summary: Login an exist user
-      description: An exist user login to the system
+      - Users
+      - Auth
+      summary: Logs user into the system
+      description: Checks whether a user exists with the given inputs and returns the user object if successful. else, returns an error message.
       requestBody:
+        content:
+          text/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/body'
         required: true
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "404":
+          description: username or password are wrong
+  /Logout:
+    post:
+      tags:
+      - Users
+      - Auth
+      summary: Logs a user out of the system
+      description: clears the cookie session of the current logged in user.
+      responses:
+        "200":
+          description: Logout succeeded
+  /users/favoriteGames:
+    get:
+      tags:
+      - Users
+      - Games
+      summary: Returns the favorite games of the user.
+      description: Returns all json objects of the favorite games of the user.
+      responses:
+        "200":
+          description: the operation successful - relevant JSON object of games(each is JSON as well) is fetched.
+          content:
+            application/json:
+              schema:
+                type: object
+    post:
+      tags:
+      - Users
+      - Games
+      summary: User add a game to his favorites
+      description: a game_id data is added to the user as a favorite game
+      requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/LoginScheme"
+              $ref: '#/components/schemas/body_1'
+        required: true
       responses:
-        "200":
-          description: >
-            User was found in the DB and authenitcated successfully.
-            The session ID is returned in a cookie named `session`. 
-            You should include this cookie in subsequent requests
-          # headers:
-          #   Set-Cookie:
-          #     schema:
-          #       type: string
-          #       example: session=87s97sdhgf279293f8w0e9
-            # Note that the Set-Cookie header and securitySchemes are not connected in any way, and the Set-Header definition is for documentation purposes only.
-        "401":
-          description: Authentication failed
-  /logout:
-    post:
-      tags:
-        - Auth
-      summary: logout a user from the system and delete his cookie
-      responses:
-        "200":
-          description: "the user has ben successfully logged out"
+        "201":
+          description: A game has been added to favorites.
+        "400":
+          description: Wrong input parameters
   /league/getDetails:
     get:
       tags:
-        - league
-      summary: Return the details about the current league
+      - League
+      summary: Returns league details.
+      description: Returns all details of the league as specified in the league schema.
       responses:
         "200":
-          description: data about the current league returned
+          description: the operation successful - league JSON object is fetched.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/League"
+                $ref: '#/components/schemas/League'
         "400":
-          description: wrong input parameters
-  /users/favoritePlayers:
+          description: Invalid league supplied
+        "404":
+          description: League not found
+  /teams/search/{teamName}:
     get:
       tags:
-        - Users
-        - Players
-      summary: Return the favorite players that were saved by user
+      - Teams
+      - Search
+      summary: Returns an array of teams matching given name
+      description: Checks whether a team exists with the given name and returns an array of team objects if successful. else, returns an error message.
       parameters:
+      - name: teamName
+        in: path
+        description: The name that needs to be fetched.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: Anderlecht
       responses:
         "200":
-          description: data about the user's favorites players returned
+          description: the operation successful - relevant team JSON object is fetched
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/PlayerPreview"
-        "401":
-          description: user is not authorized
-    post:
-      summary: save player in the favorites list of a user
+                  $ref: '#/components/schemas/Team'
+        "400":
+          description: Invalid team supplied
+        "404":
+          description: Team not found
+  /teams/teamFullDetails/{teamId}:
+    get:
       tags:
-        - Users
-        - Players
+      - Teams
+      summary: Returns full details of a team.
+      description: Returns full details of a team by sending its id.
+      parameters:
+      - name: teamId
+        in: path
+        description: Id of the team that would be fetched.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: 124
+      responses:
+        "200":
+          description: the operation successful - team's details returned.
+        "400":
+          description: Invalid team id supplied
+        "404":
+          description: Team not found with given id
+  /players/getFullDetails/{playerId}:
+    get:
+      tags:
+      - Players
+      summary: Returns full details of a player.
+      description: Returns full details of a player by sending his id.
+      parameters:
+      - name: playerId
+        in: path
+        description: Id of the player that would be fetched.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: 21
+      responses:
+        "200":
+          description: the operation successful - player's details returned.
+        "400":
+          description: Invalid player id supplied
+        "404":
+          description: Player not found with given id
+  /players/getPreviewDetails/{playerId}:
+    get:
+      tags:
+      - Players
+      summary: Returns preview details of a player.
+      description: Returns preview details of a player by sending his id.
+      parameters:
+      - name: playerId
+        in: path
+        description: Id of the player that would be fetched.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: 24
+      responses:
+        "200":
+          description: the operation successful - an object of player preview is returned.
+        "400":
+          description: Invalid player id supplied
+        "404":
+          description: Player not found with given id
+  /players/search/{playerName}:
+    get:
+      tags:
+      - Players
+      - Search
+      summary: Returns an array of players matching given name
+      description: Checks whether a player exists with the given name and returns the player object if successful. else, returns an error message.
+      parameters:
+      - name: playerName
+        in: path
+        description: The name that needs to be fetched.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: Hendrik_Van_Crombrugge
+      responses:
+        "200":
+          description: the operation successful - an array relevant players JSON object is fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Player'
+        "400":
+          description: Invalid player supplied
+        "404":
+          description: Player not found
+  /games/addGame:
+    post:
+      tags:
+      - Game
+      summary: Inserts new game into the Database
+      description: Checks whether the inserting user has the right permissions and inserts the game with its information to the database.
       requestBody:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                playerId:
-                  type: string
-                  description: player's id which the user saved
-                  example: 85
+              $ref: '#/components/schemas/body_2'
+        required: true
       responses:
         "201":
-          description: The player successfully saved as favorite
-        "401":
-          description: user is not authorized
-  /teams/teamFullDetails/{teamId}:
-    get:
-      summary: get full deatils about a team
-      description: useful for team page
+          description: A game has been added.
+        "400":
+          description: Wrong input parameters or missing arguments.
+  /admins/addAdmin:
+    post:
       tags:
-        - Teams
-      parameters:
-        - in: path
-          name: teamId
-          description: team's id
-          required: true
-          schema:
-            type: integer
+      - Admin
+      summary: Adds a new admin to the system.
+      description: Checks whether the logged user is an admin(only admins can add other admins). In addition checks whether the added user exists.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Admins'
+        required: true
       responses:
-        "200":
-          description: data about the team
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Team"
-        "404":
-          description: teamId is not exists
+        "201":
+          description: Admin added.
+        "400":
+          description: Wrong input parameters or missing arguments.
+        "401":
+          description: Invalid permissions.
+  /admins/addRepresentative:
+    post:
+      tags:
+      - Admin
+      summary: Adds a new association representative to the system.
+      description: Checks whether the logged user is an admin(only admins can add association reps). In addition checks whether the added user exists.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssociationRepresentative'
+        required: true
+      responses:
+        "201":
+          description: Association Representative added.
+        "400":
+          description: Wrong input parameters or missing arguments.
+        "401":
+          description: Invalid permissions.
+  /associationRepresentative/addGameResult:
+    post:
+      tags:
+      - Association Representative
+      summary: Adds a result of a game to the game.
+      description: Updates a result of a game.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_3'
+        required: true
+      responses:
+        "201":
+          description: Game score updated.
+        "400":
+          description: Wrong input parameters or missing arguments.
+  /associationRepresentative/addEventSchedule:
+    post:
+      tags:
+      - Association Representative
+      summary: Adds an event to event's schedule of a game.
+      description: Adds an event to event's schedule of a game including the date, time, game minute, and what is the event.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_4'
+        required: true
+      responses:
+        "201":
+          description: Game score updated.
+        "400":
+          description: Wrong input parameters or missing arguments.
 components:
   schemas:
     User:
@@ -147,71 +331,153 @@ components:
           maxLength: 8
           minLength: 3
           type: string
-          description: username conatins between 3 to 8 letters only
-          example: ladygaga
-        firstname:
+          description: username contains between 3 to 8 letters only
+        first_name:
           type: string
           description: user's first name
-          example: Stefani
-        lastname:
+        last_name:
           type: string
           description: user's last name
-          example: Germanotta
         country:
-          type: string
+          type: object
           description: user's country
-          example: USA
         password:
           maxLength: 10
           minLength: 5
           type: string
-          description:
-            password conatins between 5 to 10 chars, at least one of them
-            is a number and a special char
+          description: |
+            password contains between 5 to 10 chats, at least one of them is a number and a special char
           format: password
-          example: lady@56
         email:
-          pattern: email
           type: string
           description: user's email
-          example: ladygaga@gmail.com
+          format: email
         image-url:
-          pattern: URL
           type: string
           description: URL for the user's image
-          example: https://cloudinary.com/
+          format: URL
+        favorites:
+          type: object
+          description: Holds all the favorite Teams, Players and Games.
       description: Model containing user info
-    LoginScheme:
+    Player:
       type: object
       properties:
-        username:
+        name:
           type: string
-          minLength: 3
-          maxLength: 8
-          description: username conatins letters only
-          example: naorbe
-        password:
+          description: player's name
+          example: Sten Michael Grytebust
+        image:
           type: string
-          minLength: 5
-          maxLength: 10
-          format: password
-          description: password conatins at least one number and one special char
-          example: naor@55
+          description: player's image
+          format: URL
+          example: https://cdn.sportmonks.com/images/soccer/players/11/84587.png
+        position:
+          type: integer
+          description: player's position in team
+          example: 1
+        team_name:
+          type: string
+          description: player's team name
+          example: København
+        common_name:
+          type: string
+          description: player's common name
+          example: J. Forrest
+        nationality:
+          type: string
+          description: player's nationality
+          example: Scotland
+        birthdate:
+          type: string
+          description: player's birthdate
+          format: date
+        birthcountry:
+          type: string
+          description: player's birth country
+          example: Scotland
+        height:
+          type: string
+          description: player's height
+          example: 175 cm
+        weight:
+          type: string
+          description: player's weight
+          example: 65 kg
+    Team:
+      type: object
+      properties:
+        name:
+          type: string
+        players:
+          type: array
+          items:
+            $ref: '#/components/schemas/Player'
+        future_games:
+          type: array
+          items:
+            $ref: '#/components/schemas/Game'
+        past_games:
+          type: array
+          items:
+            $ref: '#/components/schemas/Game'
+    Game:
+      type: object
+      properties:
+        gameId:
+          type: integer
+        time:
+          type: string
+          format: date-time
+        homeTeam:
+          type: string
+        awayTeam:
+          type: string
+        stadium:
+          type: string
+        result:
+          type: string
+        eventLog:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+        referee:
+          type: string
+    Event:
+      type: object
+      properties:
+        time:
+          type: string
+          format: date-time
+        gameTime:
+          type: integer
+        event:
+          type: string
+        eventType:
+          type: string
+          enum:
+          - Goal
+          - Offside
+          - Foul
+          - Red Card
+          - Yellow Card
+          - Injury
+          - Player Switch
     League:
       type: object
       properties:
         league_name:
           type: string
-          description: league name
-          example: Superliga
         current_season_name:
           type: string
-          description: current season name
-          example: "2020/2021"
         current_stage_name:
           type: string
-          description: current stage name
-          example: Championship Round
+        next_game:
+          $ref: '#/components/schemas/Game'
+        user_favorite_games:
+          type: array
+          items:
+            $ref: '#/components/schemas/Game'
     PlayerPreview:
       type: object
       properties:
@@ -232,15 +498,97 @@ components:
           type: string
           description: player's team name
           example: København
-    Team:
+    AssociationRepresentative:
       type: object
       properties:
-        name:
+        AssociationRepresentativeId:
+          type: integer
+          description: auto increasing id.
+          example: 1
+        userId:
+          type: integer
+          description: foreign key of the user from Users table
+    Admins:
+      type: object
+      properties:
+        adminId:
+          type: integer
+          description: auto increasing id.
+          example: 1
+        userId:
+          type: integer
+          description: foreign key of the user from Users table
+    body:
+      type: object
+      properties:
+        username:
           type: string
-          description: team name
-          example: København
-        players:
-          type: array
-          items:
-            type: object
-            $ref: "#/components/schemas/PlayerPreview"
+        password:
+          type: string
+    body_1:
+      type: object
+      properties:
+        gameId:
+          type: integer
+          description: game id to add as a favorite
+          example: 3
+    body_2:
+      type: object
+      properties:
+        home_team:
+          type: integer
+          description: Home team id.
+          example: 3
+        away_team:
+          type: integer
+          description: Home team id.
+          example: 4
+        game_date_time:
+          type: string
+          description: string of format MM/DD/YYYY HH:MM that will be parsed to datetime object
+          example: 06/30/2021 10:35
+        field:
+          type: string
+          description: name of the stadium that the match will be played at.
+          example: King Baudouin Stadium
+        referee_name:
+          type: string
+          description: the name of the referee of the match
+    body_3:
+      type: object
+      properties:
+        game_id:
+          type: integer
+          description: the id of the game.
+          example: 12
+        home_team_score:
+          type: integer
+          description: Number of goals of the home team.
+          example: 3
+        away_team_score:
+          type: integer
+          description: Number of goals of the away team.
+          example: 1
+    body_4:
+      type: object
+      properties:
+        game_id:
+          type: integer
+          description: the id of the game.
+          example: 12
+        game_date:
+          type: string
+          description: the date of the game of the format MM/DD/YYYY.
+          example: 05/12/2021
+        game_time:
+          type: string
+          description: the time of the event - HH:MM.
+          example: 10:30
+        title:
+          type: string
+          description: the title of the event
+          example: Yellow Card
+        description:
+          type: string
+          description: description of the event.
+          example: Yellow Card to Messi.
