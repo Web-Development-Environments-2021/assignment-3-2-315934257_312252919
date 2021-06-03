@@ -348,7 +348,7 @@ components:
           type: string
           description: user's last name
         country:
-          type: object
+          type: string
           description: user's country
         password:
           maxLength: 10
@@ -365,9 +365,6 @@ components:
           type: string
           description: URL for the user's image
           format: URL
-        favorites:
-          type: object
-          description: Holds all the favorite Teams, Players and Games.
       description: Model containing user info
     Player:
       type: object
@@ -433,36 +430,37 @@ components:
     Game:
       type: object
       properties:
-        gameId:
+        game_id:
           type: integer
         time:
           type: string
           format: date-time
-        homeTeam:
+        home_team:
           type: string
-        awayTeam:
+        away_team:
           type: string
-        stadium:
+        field:
           type: string
-        result:
+        home_team_score:
           type: string
-        eventLog:
-          type: array
-          items:
-            $ref: '#/components/schemas/Event'
+        away_team_score:
+          type: string
         referee:
           type: string
     Event:
       type: object
       properties:
-        time:
+        game_date:
           type: string
           format: date-time
-        gameTime:
-          type: integer
-        event:
+        game_time:
           type: string
-        eventType:
+          format: date-time
+        game_minute:
+          type: integer
+        title:
+          type: string
+        description:
           type: string
           enum:
           - Goal
