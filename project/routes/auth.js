@@ -8,6 +8,12 @@ router.post("/Register", async (req, res, next) => {
     // parameters exists
     // valid parameters
     // username exists
+
+    // one of the essential parts of user is missing
+    if(!req.body.username || !req.body.password ||
+       !req.body.first_name || !req.body.last_name || !req.body.email){
+        throw {status: 401, message: "Key component for user is missing"}
+    }
     const users = await DButils.execQuery(
       "SELECT username FROM dbo.Users"
     );
