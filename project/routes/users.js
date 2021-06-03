@@ -73,7 +73,7 @@ router.post("/favoriteGames", async (req, res, next) => {
 router.get("/favoriteGames", async (req, res, next) => {
   try{
       const user_id = req.session.user_id;
-      const game_info = game_utils.gamesInfo(user_id);
+      const game_info = await game_utils.gamesInfo(user_id);
       res.status(200).send(game_info);
   }
   catch (error) {

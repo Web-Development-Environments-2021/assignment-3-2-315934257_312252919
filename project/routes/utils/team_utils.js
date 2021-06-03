@@ -38,14 +38,12 @@ async function getTeamByName(team_name){
     //   }
     //   console.log(teams_list.data);
     //#endregion
-
     teams_list.data.data.map((team) => {
-        if(team.league.data.id === leauge_utils.getLeagueID()){
+        if(team.league && team.league.data.id === league_utils.getLeagueID()){
           team_relevant_info = {name: team.name, logo: team.logo_path}
             league_teams_list.push(team_relevant_info);
         }
     });
-    console.log(league_teams_list)
     return league_teams_list;
 }
 
