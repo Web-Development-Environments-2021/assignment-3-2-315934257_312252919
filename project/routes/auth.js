@@ -35,13 +35,12 @@ router.post("/Register", async (req, res, next) => {
 
 router.post("/Login", async (req, res, next) => {
   try {
-    const user = (
+    let user = (
       await DButils.execQuery(
         `SELECT * FROM dbo.Users WHERE username = '${req.body.username}'`
       )
     )[0];
     // user = user[0];
-    console.log(user);
 
     // check that username exists & the password is correct
     if (!user || !bcrypt.compareSync(req.body.password, user.pswd)) {

@@ -21,7 +21,13 @@ async function markGameAsFavorite(user_id, game_id){
 
   if (user_games.find((game) => game.game_id == game_id)){
     throw { status: 409, message: "Game already set as a favorite"};
-  }   
+  } 
+  const game_exists = await DButils.execQuery(
+    `SELECT game_id FROM dbo.Games where game_id='${game_id}'`
+  );
+  if(!game_exists || game_exists.length == 0){
+    throw {status: 404, message: "This game doesn't exist."}
+  }
 
   await DButils.execQuery(
     `insert into UsersFavoriteGames values ('${user_id}',${game_id})`
