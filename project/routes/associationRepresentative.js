@@ -48,7 +48,8 @@ router.post("/addGameResult", async function(req, res, next){
 
 router.post("/addEventSchedule", async function(req, res, next) {
     try{
-        if(req.body.game_id && req.body.game_time && req.body.game_minute && req.body.title && req.body.description){
+        if(req.body.game_id && req.body.game_time && req.body.game_minute && 
+           req.body.title && req.body.description){
             const game =  (
                 await DButils.execQuery(
                 `SELECT * FROM dbo.Games WHERE game_id = '${req.body.game_id}'`
@@ -57,7 +58,6 @@ router.post("/addEventSchedule", async function(req, res, next) {
               if(!game){
                 throw { status: 401, message: "There's no such a game with given id."};
               }
-              console.log(game.game_date_time)
             await DButils.execQuery(
             `INSERT INTO dbo.Events (game_id, game_date, game_time, game_minute, title, description) VALUES
                 ('${req.body.game_id}', '${String(game.game_date_time).slice(0,16)}', '${req.body.game_time}' ,'${req.body.game_minute}', '${req.body.title}', '${req.body.description}')`

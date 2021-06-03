@@ -2,10 +2,16 @@ var express = require("express");
 var router = express.Router();
 const DButils = require("../routes/utils/DButils");
 
+router.use(async function (req, res, next) {
+  if (req.session && req.session.user_id) {
+    next();
+  } else {
+    res.sendStatus(401);
+  }
+});
 
 router.post("/addAdmin", async function(req, res, next) {
     try{
-      if(req.session && req.session.user_id){
         const admin =  (
           await DButils.execQuery(
           `SELECT * FROM dbo.Admins WHERE userId = '${req.session.user_id}'`
@@ -22,10 +28,6 @@ router.post("/addAdmin", async function(req, res, next) {
            ('${req.body.userId}')`
         );
         res.status(201).send("admin added");
-      }
-      else{
-        throw { status: 401, message: "You don't have the permissions."};
-      }
     }
     catch (error) {
       next(error);
@@ -36,7 +38,6 @@ router.post("/addAdmin", async function(req, res, next) {
 
 router.post("/addRepresentative", async function(req, res, next) {
   try{
-    if(req.session && req.session.user_id){
       const admin =  (
         await DButils.execQuery(
         `SELECT * FROM dbo.Admins WHERE userId = '${req.session.user_id}'`
@@ -53,11 +54,6 @@ router.post("/addRepresentative", async function(req, res, next) {
           ('${req.body.userId}')`
       );
       res.status(201).send("association representative added");
-    }
-    else{
-      throw { status: 401, message: "You don't have the permissions."};
-    }
-    
   }
   catch (error) {
     next(error);
