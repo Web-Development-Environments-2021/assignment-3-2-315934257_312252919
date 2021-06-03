@@ -73,15 +73,6 @@ function find_past_future_games(team_games){
   return {past: past_games, future: future_games};
 }
 
-// find_past_future_games = (team_games) => {
-//   past_games = [];
-//   future_games = [];
-//   team_games.map((game) => {game.game_date_time < Date.now() ?
-//       past_games.push(game) : future_games.push(game)})
-//   return {past: past_games, future: future_games};
-// }
-
-
 exports.getTeamByName = getTeamByName;
 exports.getTeamById = getTeamById;
 exports.find_past_future_games = find_past_future_games;

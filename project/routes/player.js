@@ -4,6 +4,9 @@ const players_utils = require("./utils/players_utils");
 
 router.get("/getPreviewDetails/:playerId", async (req, res, next) => {
     try {
+        if(!req.params.playerId){
+            throw {status: 400, message: "Missing parameters"};
+        }
         const player_details = await players_utils.getPlayersInfo([req.params.playerId], false);
     //     const player_details = {
     //         "name": "James Forrest",
@@ -19,6 +22,9 @@ router.get("/getPreviewDetails/:playerId", async (req, res, next) => {
 
 router.get("/search/:playerName", async (req, res, next) => {
     try{
+        if(!req.params.playerName){
+            throw {status: 400, message: "Missing parameters"};
+        }
         const players_details = await players_utils.getPlayerDetailsByName(req.params.playerName, req.query);
         res.send(players_details);
     } catch(error){
@@ -30,6 +36,9 @@ router.get("/search/:playerName", async (req, res, next) => {
 
 router.get("/getFullDetails/:playerId", async (req, res, next) => {
     try {
+        if(!req.params.playerId){
+            throw {status: 400, message: "Missing parameters"};
+        }
         const player_details = await players_utils.getPlayersInfo([req.params.playerId], true);
         // const player_details = {
         //     "name": "James Forrest",
