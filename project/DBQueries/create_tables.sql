@@ -100,3 +100,22 @@ CREATE TABLE dbo.UsersFavoriteGames
     -- specify more columns here
 );
 GO
+
+-- Create a new table called 'Events' in schema 'dbo'
+-- Drop the table if it already exists
+IF OBJECT_ID('dbo.Events', 'U') IS NOT NULL
+DROP TABLE dbo.Events
+GO
+-- Create the table in the specified schema
+CREATE TABLE dbo.Events
+(
+    event_id INT NOT NULL IDENTITY(1,1), -- primary key column
+    game_id INT NOT NULL FOREIGN KEY REFERENCES Games(game_id),
+    game_date [NVARCHAR](50) NOT NULL,
+    game_time [NVARCHAR](50) NOT NULL,
+    game_minute INT NOT NULL,
+    title [NVARCHAR](50) NOT NULL,
+    description [NVARCHAR](50) NOT NULL,
+    PRIMARY KEY(event_id, game_id)
+);
+GO

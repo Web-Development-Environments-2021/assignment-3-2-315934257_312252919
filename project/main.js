@@ -55,6 +55,7 @@ const teams = require("./routes/teams");
 const games = require("./routes/games");
 const players = require("./routes/player");
 const admins = require("./routes/admins");
+const associationRep = require("./routes/associationRepresentative");
 
 
 //#endregion
@@ -86,6 +87,7 @@ app.use("/teams", teams);
 app.use("/games", games);
 app.use("/players", players);
 app.use("/admins", admins);
+app.use("/associationRepresentative", associationRep);
 app.use(auth);
 
 app.use(function (err, req, res, next) {
