@@ -6,8 +6,10 @@ const team_utils = require("./utils/team_utils");
 const league_utils = require("./utils/league_utils");
 
 router.get("/teamFullDetails/:teamId", async (req, res, next) => {
-  // let team_details = [];
   try {
+    if(!req.params.teamId){
+      throw {status: 400, message: "Missing parameters"};
+    }
     const league_check = await team_utils.getTeamById(req.params.teamId);
     console.log(league_check.data.data);
     if(league_check.data.data.league && league_check.data.data.league.data.id != league_utils.getLeagueID()){
@@ -15,9 +17,7 @@ router.get("/teamFullDetails/:teamId", async (req, res, next) => {
       return;
     }
 
-    const team_details = await players_utils.getPlayersByTeam(
-      req.params.teamId
-    );
+    const team_details = await players_utils.getPlayersByTeam(req.params.teamId);
   //   const team_details = [
   //     {
   //         "name": "Mads Hermansen",
@@ -194,27 +194,20 @@ router.get("/teamFullDetails/:teamId", async (req, res, next) => {
        WHERE home_team='${req.params.teamId}' 
        OR away_team='${req.params.teamId}'`
        );
-    game_partition = find_past_future_games(team_games);
+    game_partition = team_utils.find_past_future_games(team_games);
     res.send({team_info : team_details, past_games: game_partition.past, future_games: game_partition.future});
   } catch (error) {
     next(error);
   }
 });
 
-find_past_future_games = (team_games) => {
-  past_games = [];
-  future_games = [];
-  team_games.map((game) => {game.game_date_time < Date.now() ?
-      past_games.push(game) : future_games.push(game)})
-  return {past: past_games, future: future_games};
-}
-
 
 router.get("/search/:teamName", async (req, res, next) => {
   try {
-    const team_responses = await team_utils.getTeamByName(
-      req.params.teamName
-    );
+    if(!req.params.teamName){
+      throw {status: 400, message: "Missing parameters"};
+    }
+    const team_responses = await team_utils.getTeamByName(req.params.teamName);
     res.send(team_responses);
   } catch (error) {
     next(error);
