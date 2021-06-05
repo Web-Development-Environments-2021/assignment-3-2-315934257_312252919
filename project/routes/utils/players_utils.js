@@ -38,7 +38,9 @@ async function getPlayersInfo(players_ids_list, full_details) {
       })
     )
   );
-  let players_info = await Promise.all(promises);
+  let players_info = await Promise.all(promises).catch( err => {
+    throw { status: 403, message: "No such player with given id."}
+  });
   if(full_details){
     return extractAllData(players_info);
   }
