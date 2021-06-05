@@ -8,12 +8,6 @@ router.get("/getPreviewDetails/:playerId", async (req, res, next) => {
             throw {status: 400, message: "Missing parameters"};
         }
         const player_details = await players_utils.getPlayersInfo([req.params.playerId], false);
-    //     const player_details = {
-    //         "name": "James Forrest",
-    //         "image": "https://cdn.sportmonks.com/images/soccer/players/8/172104.png",
-    //         "position": 3,
-    //         "team_name": "Celtic"
-    //     };
         if(player_details.length == 0){
             res.status(404).send("No player with given id was found");
             return;
@@ -44,18 +38,6 @@ router.get("/getFullDetails/:playerId", async (req, res, next) => {
             throw {status: 400, message: "Missing parameters"};
         }
         const player_details = await players_utils.getPlayersInfo([req.params.playerId], true);
-        // const player_details = {
-        //     "name": "James Forrest",
-        //     "image": "https://cdn.sportmonks.com/images/soccer/players/8/172104.png",
-        //     "position": 3,
-        //     "team_name": "Celtic",
-        //     "common_name": "J. Forrest",
-        //     "nationality": "Scotland",
-        //     "birthdate": "07/07/1991",
-        //     "birthcountry": "Scotland",
-        //     "height": "175 cm",
-        //     "weight": null
-        // }
 
         if(player_details.length == 0){
             res.status(404).send("No player with given id was found");
