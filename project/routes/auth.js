@@ -11,7 +11,7 @@ router.post("/Register", async (req, res, next) => {
 
     // one of the essential parts of user is missing
     if(!req.body.username || !req.body.password ||
-       !req.body.first_name || !req.body.last_name || !req.body.email){
+       !req.body.first_name || !req.body.last_name || !req.body.email || !req.body.country){
         throw {status: 401, message: "Key component for user is missing"}
     }
     const users = await DButils.execQuery(
@@ -28,11 +28,20 @@ router.post("/Register", async (req, res, next) => {
     );
     req.body.password = hash_password;
 
-    // add the new username
-    await DButils.execQuery(
-      `INSERT INTO dbo.Users (username, first_name, last_name, pswd, email) VALUES
-       ('${req.body.username}', '${req.body.first_name}', '${req.body.last_name}', '${hash_password}', '${req.body.email}')`
-    );
+    if(req.body.img_url){
+      await DButils.execQuery(
+        `INSERT INTO dbo.Users (username, first_name, last_name, pswd, email, country, img_url) VALUES
+        ('${req.body.username}', '${req.body.first_name}', '${req.body.last_name}', '${hash_password}', '${req.body.email}', '${req.body.country}', '${req.body.img_url}')`
+      );
+    }
+    else{
+      await DButils.execQuery(
+        `INSERT INTO dbo.Users (username, first_name, last_name, pswd, email, country) VALUES
+        ('${req.body.username}', '${req.body.first_name}', '${req.body.last_name}', '${hash_password}', '${req.body.email}', '${req.body.country}')`
+      );
+    }
+
+    
     res.status(201).send("user created");
   } catch (error) {
     next(error);
