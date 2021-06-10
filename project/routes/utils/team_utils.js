@@ -15,29 +15,7 @@ async function getTeamByName(team_name){
           include: "league"
         },
       });
-
-    //#region 
-    // const teams_list_data = {
-    //     data: [
-    //       {
-    //         id: 211,
-    //         legacy_id: 631,
-    //         name: 'Horsens',
-    //         short_code: 'ACH',
-    //         twitter: null,
-    //         country_id: 320,
-    //         national_team: false,
-    //         founded: 1994,
-    //         logo_path: 'https://cdn.sportmonks.com/images//soccer/teams/19/211.png',
-    //         venue_id: 5661,
-    //         current_season_id: 17328,
-    //         is_placeholder: false
-    //       }
-    //     ],
-    //     meta: { plans: [ [Object] ], sports: [ [Object], [Object] ] }
-    //   }
-    //   console.log(teams_list.data);
-    //#endregion
+      
     teams_list.data.data.map((team) => {
         if(team.league && team.league.data.id === league_utils.getLeagueID()){
           team_relevant_info = {name: team.name, logo: team.logo_path}

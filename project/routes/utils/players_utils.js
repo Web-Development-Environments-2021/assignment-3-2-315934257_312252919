@@ -1,7 +1,6 @@
 const axios = require("axios");
 const league_utils = require("./league_utils")
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
-// const TEAM_ID = "85";
 
 
 /*
@@ -79,26 +78,6 @@ function extractAllData(players_info){
 
   return ret;
 
-  //#region 
-  // return players_info.map((player_info) => {
-  //   const { fullname, image_path, position_id,
-  //           common_name, nationality, birthdate,
-  //           birthcountry, height, weight } = player_info.data.data;
-  //   const { name } = player_info.data.data.team.data;
-  //   return {
-  //     name: fullname,
-  //     image: image_path,
-  //     position: position_id,
-  //     team_name: name,
-  //     common_name: common_name,
-  //     nationality: nationality,
-  //     birthdate: birthdate,
-  //     birthcountry: birthcountry,
-  //     height: height,
-  //     weight: weight
-  //   };
-  // });
-  //#endregion
 }
 
 /*
@@ -121,19 +100,6 @@ function extractRelevantPlayerData(players_info) {
     }
   });
   return ret;
-  
-  //#region 
-  // return players_info.map((player_info) => {
-  //   const { fullname, image_path, position_id } = player_info.data.data;
-  //   const { name } = player_info.data.data.team.data;
-  //   return {
-  //     name: fullname,
-  //     image: image_path,
-  //     position: position_id,
-  //     team_name: name,
-  //   };
-  // });
-  //#endregion
 }
 
 /*
