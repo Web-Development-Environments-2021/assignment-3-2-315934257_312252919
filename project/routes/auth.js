@@ -65,8 +65,31 @@ router.post("/Login", async (req, res, next) => {
     // Set cookie
     req.session.user_id = user.user_id;
 
+// trying to add permissions to user
+
+    let userPermissions = "";
+
+    const admin =  (
+      await DButils.execQuery(
+      `SELECT * FROM dbo.Admins WHERE userId = '${req.session.user_id}'`
+      )
+    )[0];
+
+    const rep =  (
+      await DButils.execQuery(
+      `SELECT * FROM dbo.AssociationRepresentative WHERE userId = '${user.user_id}'`
+      )
+    )[0];
+
+    if(rep){
+      userPermissions = userPermissions.concat("representative");
+    }
+    if(admin){
+      userPermissions = userPermissions.concat("admin");
+    }
+
     // return cookie
-    res.status(200).send("login succeeded");
+    res.status(200).send({message:"login succeeded", permissionType: userPermissions});
   } catch (error) {
     next(error);
   }
