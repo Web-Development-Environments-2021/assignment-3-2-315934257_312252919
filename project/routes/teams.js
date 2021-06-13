@@ -16,14 +16,16 @@ router.get("/teamFullDetails/:teamId", async (req, res, next) => {
       return;
     }
 
-    const team_details = await players_utils.getPlayersByTeam(req.params.teamId);
+    const team_details = await team_utils.getTeamById(req.params.teamId);
+    const r = {team_name: team_details.data.data.name, logo: team_details.data.data.logo_path};
+    const players_details = await players_utils.getPlayersByTeam(req.params.teamId);
     const team_games = await DButils.execQuery(
       `SELECT * FROM dbo.Games
        WHERE home_team='${req.params.teamId}' 
        OR away_team='${req.params.teamId}'`
        );
     game_partition = team_utils.find_past_future_games(team_games);
-    res.send({team_info : team_details, past_games: game_partition.past, future_games: game_partition.future});
+    res.send({team_info : r, players_info:players_details, past_games: game_partition.past, future_games: game_partition.future});
   } catch (error) {
     next(error);
   }

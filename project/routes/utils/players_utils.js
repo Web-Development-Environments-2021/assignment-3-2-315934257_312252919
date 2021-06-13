@@ -86,11 +86,13 @@ returns specific data(preview) of players.
 function extractRelevantPlayerData(players_info) {
   let ret = [];
   players_info.map((player_info) => {
-        if(player_info.data.data.team.data.league.data.id == league_utils.getLeagueID()){ //check if league id equals to 271
-        const { fullname, image_path, position_id } = player_info.data.data;
+        // if(player_info.data.data.team.data.league.data.id == league_utils.getLeagueID()){ //check if league id equals to 271
+      if(player_info.data.data.team && player_info.data.data.team.data.league.data.id == league_utils.getLeagueID()){ //check if league id equals to 271
+        const {player_id, fullname, image_path, position_id } = player_info.data.data;
         const { name } = player_info.data.data.team.data;
 
         let x = {
+              id: player_id,
               name: fullname,
               image: image_path,
               position: position_id,
@@ -145,10 +147,11 @@ function extractRelevantPlayerDataByName(players_info, req_query) {
   let ret = []
   players_info.map((player_info) => {
     if(playerInLeagueCheck(player_info) && filterByQuery(player_info, req_query)){
-      const { fullname, image_path, position_id } = player_info;
+      const {player_id, fullname, image_path, position_id } = player_info;
       let name = player_info.team.data.name;
 
       ret.push({
+        id: player_id,
         name: fullname,
         image: image_path,
         position: position_id,

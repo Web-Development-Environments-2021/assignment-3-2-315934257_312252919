@@ -18,7 +18,7 @@ async function getTeamByName(team_name){
       
     teams_list.data.data.map((team) => {
         if(team.league && team.league.data.id === league_utils.getLeagueID()){
-          team_relevant_info = {name: team.name, logo: team.logo_path}
+          team_relevant_info = {id:team.id, name: team.name, logo: team.logo_path}
             league_teams_list.push(team_relevant_info);
         }
     });
