@@ -45,9 +45,9 @@ checks whether a team with team_id is part of the league.
 async function checkTeamInLeague(team_id){
   const league_check = await getTeamById(team_id);
   if(league_check.data.data.league && league_check.data.data.league.data.id != league_utils.getLeagueID()){
-    return false;
+    return undefined;
   }
-  return true;
+  return league_check.data.data;
 }
 
 /*
