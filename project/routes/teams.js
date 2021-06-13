@@ -43,5 +43,17 @@ router.get("/search/:teamName", async (req, res, next) => {
 });
 
 
+router.get("/getAllTeams", async (req, res, next) => {
+  try{
+    const teams = await team_utils.getAllTeams();
+    res.send(teams)
+
+  }
+  catch (error){
+    next(error);
+  }
+});
+
+
 
 module.exports = router;

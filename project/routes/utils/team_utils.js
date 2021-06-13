@@ -2,7 +2,7 @@ const axios = require("axios");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 const league_utils = require("./league_utils");
 const game_utils = require("./game_utils");
-
+const COUNTRY_ID = 320;
 
 /*
 searches for teams with given name and returns them - team name and team logo
@@ -57,9 +57,26 @@ function find_past_future_games(team_games){
   return game_utils.sepPastFutureGames(team_games);
 }
 
+async function getAllTeams(){
+  const teams = await axios.get(`${api_domain}/countries/${COUNTRY_ID}/teams`, {
+    params: {
+      api_token: process.env.api_token,
+      include: "league"
+    },
+  });
+  let leagueTeams = []
+  teams.data.data.map((team) => {
+    if(team.league.data.id == 271){
+      leagueTeams.push(team)
+    }
+  });
+  return leagueTeams;
+}
+
 
 
 exports.getTeamByName = getTeamByName;
 exports.getTeamById = getTeamById;
 exports.find_past_future_games = find_past_future_games;
 exports.checkTeamInLeague = checkTeamInLeague;
+exports.getAllTeams = getAllTeams;
