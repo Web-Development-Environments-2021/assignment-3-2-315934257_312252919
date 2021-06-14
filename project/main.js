@@ -92,7 +92,8 @@ app.use(auth);
 
 app.use(function (err, req, res, next) {
   console.error(err);
-  res.status(err.status || 500).send(err.message);
+  // res.status(err.status || 500).send(err.message);
+  res.send(err);
 });
 
 const server = app.listen(port, () => {
