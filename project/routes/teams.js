@@ -21,8 +21,8 @@ router.get("/teamFullDetails/:teamId", async (req, res, next) => {
     const players_details = await players_utils.getPlayersByTeam(req.params.teamId);
     const team_games = await DButils.execQuery(
       `SELECT * FROM dbo.Games
-       WHERE home_team='${req.params.teamId}' 
-       OR away_team='${req.params.teamId}'`
+       WHERE home_team_id='${req.params.teamId}' 
+       OR away_team_id='${req.params.teamId}'`
        );
     game_partition = team_utils.find_past_future_games(team_games);
     res.send({team_info : r, players_info:players_details, past_games: game_partition.past, future_games: game_partition.future});
