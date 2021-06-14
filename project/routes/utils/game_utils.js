@@ -40,7 +40,7 @@ returns the closest future game by it's date
 */
 async function getClosestGame(){
     let games = await DButils.execQuery(
-        `SELECT home_team, away_team, game_date_time, field from Games
+        `SELECT game_id, home_team_id, away_team_id, home_team_name, away_team_name, game_date_time, field from Games
         where game_date_time > GETDATE()`
     );
     games.sort(function(a,b){
