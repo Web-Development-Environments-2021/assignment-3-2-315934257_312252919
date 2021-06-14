@@ -117,6 +117,8 @@ checks the filter params.
 function filterByQuery(player_info, req_query){
   let team_name = req_query.team
   let position = req_query.position
+  console.log(team_name);
+  console.log(position);
   if(!team_name && !position){ //if both undefined, don't filter
     return true;
   }
@@ -126,12 +128,12 @@ function filterByQuery(player_info, req_query){
     }
   }
   else if(team_name && !position){ //if position is undefined, filter by team_name only
-    if(player_info.team && player_info.team.data.name == team_name){
+    if(player_info.team && (player_info.team.data.name == team_name || player_info.team.data.short_code == team_name)){
       return true
     }
   }
   else{ // if both are defined, filter by both
-    if(player_info.team && player_info.team.data.name == team_name && player_info.position_id == position){
+    if(player_info.team && (player_info.team.data.name == team_name || player_info.team.data.short_code == team_name) && player_info.position_id == position){
       return true
     }
   }
