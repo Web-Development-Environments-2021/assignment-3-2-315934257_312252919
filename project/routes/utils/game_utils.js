@@ -8,7 +8,7 @@ returns game's information from DB.
 */
 async function getGameInfo(game_id){
     let game_info = await DButils.execQuery(
-        `select game_id, home_team, away_team, game_date_time, field from Games where game_id='${game_id}'`
+        `select game_id, home_team_id, away_team_id, home_team_name, away_team_name, game_date_time, field from Games where game_id='${game_id}'`
       );
     return game_info[0];
 }

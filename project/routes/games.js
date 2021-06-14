@@ -15,14 +15,17 @@ router.post("/addGame", async (req, res, next) => {
         if(!representative){
           throw { status: 401, message: "You don't have the permissions."};
         }
-
-        if(!(await team_utils.checkTeamInLeague(req.body.home_team)) || !(await team_utils.checkTeamInLeague(req.body.away_team))){
+        const homeTeamDetails = await team_utils.checkTeamInLeague(req.body.home_team)
+        const awayTeamDetails = await team_utils.checkTeamInLeague(req.body.away_team)
+        if(!homeTeamDetails || !awayTeamDetails){
           throw {status: 406 , message: "You can't add teams that are not part of the league."}
         }
+
+        console.log(homeTeamDetails)
       
         await DButils.execQuery(
-            `INSERT INTO dbo.Games (home_team, away_team, game_date_time, field, referee_name) VALUES
-            ('${req.body.home_team}', '${req.body.away_team}', '${req.body.game_date_time}', '${req.body.field}', '${req.body.referee_name}')`
+            `INSERT INTO dbo.Games (home_team_id, away_team_id, home_team_name, away_team_name, game_date_time, field, referee_name) VALUES
+            ('${req.body.home_team}', '${req.body.away_team}', '${homeTeamDetails.name}', '${awayTeamDetails.name}', '${req.body.game_date_time}', '${req.body.field}', '${req.body.referee_name}')`
           );
           res.status(201).send("game added");
       }
@@ -44,8 +47,11 @@ router.get("/stageGames", async (req, res, next) => {
     future.map((game) => {
       future_relevant_info.push(
         {
-          home_team : game.home_team,
-          away_team : game.away_team,
+          id: game.game_id,
+          home_team : game.home_team_id,
+          away_team : game.away_team_id,
+          home_team_name: game.home_team_name,
+          away_team_name: game.away_team_name,
           game_date_time : game.game_date_time,
           field : game.field
         }
@@ -56,8 +62,11 @@ router.get("/stageGames", async (req, res, next) => {
       const events = await gameUtils.getGameEvents(game.game_id);
       past_relevant_info.push(
         {
-          home_team : game.home_team,
-          away_team : game.away_team,
+          id: game.game_id,
+          home_team : game.home_team_id,
+          away_team : game.away_team_id,
+          home_team_name: game.home_team_name,
+          away_team_name: game.away_team_name,
           game_date_time : game.game_date_time,
           field : game.field,
           home_team_score : game.home_team_score,
