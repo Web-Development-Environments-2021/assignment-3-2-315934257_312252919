@@ -38,9 +38,9 @@ async function getLeagueDetails(user_id) {
       api_token: process.env.api_token,
     },
   });
-  console.log(cur_stage);
   return {
     league_name: league.data.data.name,
+    league_logo: league.data.data.logo_path,
     current_season_name: league.data.data.season.data.name,
     // current_stage_name: stage ? stage.data.data.name : null,
     current_stage: cur_stage.data.data[1],
