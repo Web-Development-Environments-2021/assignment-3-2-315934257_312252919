@@ -87,7 +87,7 @@ function extractRelevantPlayerData(players_info) {
   let ret = [];
   players_info.map((player_info) => {
         // if(player_info.data.data.team.data.league.data.id == league_utils.getLeagueID()){ //check if league id equals to 271
-      if(player_info.data.data.team && player_info.data.data.team.data.league.data.id == league_utils.getLeagueID()){ //check if league id equals to 271
+      if( player_info.data.data && player_info.data.data.team && player_info.data.data.team.data.league.data.id == league_utils.getLeagueID()){ //check if league id equals to 271
         const {player_id, fullname, image_path, position_id } = player_info.data.data;
         const { name } = player_info.data.data.team.data;
 
@@ -117,8 +117,6 @@ checks the filter params.
 function filterByQuery(player_info, req_query){
   let team_name = req_query.team
   let position = req_query.position
-  console.log(team_name);
-  console.log(position);
   if(!team_name && !position){ //if both undefined, don't filter
     return true;
   }
